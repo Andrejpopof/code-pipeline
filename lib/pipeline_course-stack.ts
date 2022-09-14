@@ -5,7 +5,6 @@ import { Artifact, Pipeline } from 'aws-cdk-lib/aws-codepipeline';
 import { CodeBuildAction, GitHubSourceAction } from 'aws-cdk-lib/aws-codepipeline-actions';
 import { Construct } from 'constructs';
 
-// import * as sqs from 'aws-cdk-lib/aws-sqs';
 
 export class PipelineCourseStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
@@ -18,22 +17,20 @@ export class PipelineCourseStack extends cdk.Stack {
 
    const sourceOutput = new Artifact('SourceOutput');
 
-   pipeline.addStage(
-    {
-      stageName: 'Source',
-      actions:[
-        new GitHubSourceAction({
-          owner: 'Andrejpopof',
-          repo: 'code-pipeline',
-          branch: 'main',
-          actionName: 'Pipeline_Source',
-          oauthToken: SecretValue.secretsManager('github-pipeline-token'),
-          output: sourceOutput
-        })
-      ]
-    }
-   );
-
+   pipeline.addStage({
+    stageName: "Source",
+    actions: [
+      new GitHubSourceAction({
+        owner: "Andrejpopof",
+        repo: "code-pipeline",
+        branch: "main",
+        actionName: "Pipeline_Source",
+        oauthToken: SecretValue.secretsManager("github-pipeline-token"),
+        output: sourceOutput,
+      }),
+    ],
+  });
+  
    const codeBuildOutput = new Artifact('BuildOutput');
    pipeline.addStage({
     stageName: 'Build',

@@ -16,7 +16,7 @@ interface BudgetProps {
             amount: props.budgetAmount,
             unit: "USD",
           },
-          budgetName: "Monthly Budget",
+          budgetName: "Monthly Budget1",
           budgetType: "COST",
           timeUnit: "MONTHLY",
         },
