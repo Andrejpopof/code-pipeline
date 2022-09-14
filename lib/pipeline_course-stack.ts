@@ -60,17 +60,7 @@ export class PipelineCourseStack extends cdk.Stack {
       })
     ]
    });
-   pipeline.addStage({
-    stageName: 'Billing_Update',
-    actions:[
-      new CloudFormationCreateUpdateStackAction({
-        actionName: 'Billing_Update',
-        stackName: 'BillingStack',
-        templatePath: codeBuildOutput.atPath('BillingStack.template.json'),
-        adminPermissions: true
-      })
-    ]
-   })
+
 
    
 
