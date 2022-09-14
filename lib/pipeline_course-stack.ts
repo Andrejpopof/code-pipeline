@@ -15,7 +15,8 @@ export class PipelineCourseStack extends cdk.Stack {
     crossAccountKeys: false
    });
 
-   const sourceOutput = new Artifact('SourceOutput');
+   const cdkSourceOutput = new Artifact('CDKSourceOutput');
+   const serviceSourceOutput = new Artifact('ServiceSourceOutput')
 
    pipeline.addStage({
     stageName: "Source",
@@ -26,7 +27,15 @@ export class PipelineCourseStack extends cdk.Stack {
         branch: "main",
         actionName: "Pipeline_Source",
         oauthToken: SecretValue.secretsManager("github-pipeline-token"),
-        output: sourceOutput,
+        output: cdkSourceOutput,
+      }),
+      new GitHubSourceAction({
+        owner: "Andrejpopof",
+        repo: "express-lambda",
+        branch: "main",
+        actionName: "Service-Source",
+        oauthToken: SecretValue.secretsManager("github-pipeline-token"),
+        output: serviceSourceOutput,
       }),
     ],
   });
@@ -37,7 +46,7 @@ export class PipelineCourseStack extends cdk.Stack {
     actions:[
       new CodeBuildAction({
         actionName: 'CDK_Build',
-        input: sourceOutput,
+        input: cdkSourceOutput,
         outputs: [codeBuildOutput],
         project: new PipelineProject(this,'CdkBuildProject',{
           environment:{
@@ -50,7 +59,7 @@ export class PipelineCourseStack extends cdk.Stack {
    });
 
    pipeline.addStage({
-    stageName: 'Pipeline_Update1',
+    stageName: 'Pipeline_Update',
     actions:[
       new CloudFormationCreateUpdateStackAction({
         actionName: 'Pipeline_Update',
