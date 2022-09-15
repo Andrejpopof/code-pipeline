@@ -92,9 +92,6 @@ export class PipelineCourseStack extends cdk.Stack {
     ]
    });
 
-
-   
-
   }
 
   public addServiceStage(serviceStack: ServiceStack, stageName: string){
