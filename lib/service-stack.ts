@@ -16,7 +16,7 @@ export class ServiceStack extends Stack{
             runtime: Runtime.NODEJS_14_X,
             handler: 'src/lambda.handler',
             code: this.serviceCode,
-            functionName: 'ServiceLambda'
+            functionName: 'ServiceLambda1'
         });
 
         
