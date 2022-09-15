@@ -1,9 +1,11 @@
 import * as cdk from 'aws-cdk-lib';
-import { SecretValue } from 'aws-cdk-lib';
+import { SecretValue, Stage } from 'aws-cdk-lib';
+import { IStage } from 'aws-cdk-lib/aws-apigateway';
 import { BuildSpec, LinuxBuildImage, PipelineProject } from 'aws-cdk-lib/aws-codebuild';
-import { Artifact, Pipeline } from 'aws-cdk-lib/aws-codepipeline';
+import { Action, Artifact, Pipeline } from 'aws-cdk-lib/aws-codepipeline';
 import { CloudFormationCreateUpdateStackAction, CodeBuildAction, CodeCommitSourceAction, GitHubSourceAction } from 'aws-cdk-lib/aws-codepipeline-actions';
 import { Construct } from 'constructs';
+import { BillingStack } from './billing-stack';
 import { ServiceStack } from './service-stack';
 
 
@@ -94,7 +96,7 @@ export class PipelineCourseStack extends cdk.Stack {
 
   }
 
-  public addServiceStage(serviceStack: ServiceStack, stageName: string){
+  public addServicesToStage(serviceStack: ServiceStack, stageName: string, billingStack: BillingStack) {
     this.pipeline.addStage({
       stageName: stageName,
       actions: [
@@ -107,8 +109,22 @@ export class PipelineCourseStack extends cdk.Stack {
             ...serviceStack.serviceCode.assign(this.serviceBuildOutput.s3Location)
           },
           extraInputs: [this.serviceBuildOutput]
+        }),
+
+        new CloudFormationCreateUpdateStackAction({
+          actionName: 'Billing_Update',
+          stackName: billingStack.stackName,
+          templatePath: this.cdkBuildOutput.atPath(`${billingStack.stackName}.template.json`),
+          adminPermissions: true
         })
       ]
     })
   }
+
+
+  
+
+  
+
+  
 }

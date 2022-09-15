@@ -11,11 +11,12 @@ const pipelineStack = new PipelineCourseStack(app, 'PipelineCourseStack', {
   env: {account: process.env.CDK_DEFAULT_ACCOUNT , region:'us-east-1'}
 });
 
-new BillingStack(app, 'BillingStack', {
+const billingStack = new BillingStack(app, 'BillingStack', {
   env: {account: process.env.CDK_DEFAULT_ACCOUNT, region: 'us-east-1'},
   budgetAmount: 5,
   emailAddress: 'pope1.wow@gmail.com'
 })
 
 const serviceStackProd = new ServiceStack(app, 'ServiceStackProd');
-pipelineStack.addServiceStage(serviceStackProd, 'Prod');
+pipelineStack.addServicesToStage(serviceStackProd, 'Prod', billingStack);
+
